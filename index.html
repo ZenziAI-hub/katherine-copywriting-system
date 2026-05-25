@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Copywriting System — Katherine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface-raised: #21253a;
+    --border: #2a2f45;
+    --border-light: #343a54;
+    --text: #e8eaf6;
+    --text-mid: #9196b0;
+    --text-faint: #555c7a;
+    --accent: #6c8fff;
+    --accent-soft: rgba(108, 143, 255, 0.12);
+    --green: #4ade80;
+    --green-soft: rgba(74, 222, 128, 0.12);
+    --amber: #fbbf24;
+    --amber-soft: rgba(251, 191, 36, 0.12);
+    --rose: #fb7185;
+    --rose-soft: rgba(251, 113, 133, 0.12);
+    --purple: #c084fc;
+    --purple-soft: rgba(192, 132, 252, 0.12);
+    --cyan: #22d3ee;
+    --cyan-soft: rgba(34, 211, 238, 0.12);
+    --font: 'Inter', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 3rem 2rem 6rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  .hero {
+    text-align: center;
+    padding: 3rem 2rem 4rem;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%; transform: translateX(-50%);
+    width: 400px; height: 300px;
+    background: radial-gradient(ellipse, rgba(108,143,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid rgba(108,143,255,0.25);
+    padding: 0.3rem 0.9rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    font-size: 0.95rem;
+    color: var(--text-mid);
+    max-width: 480px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .stat-val {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  /* ── PROBLEM / SOLUTION ── */
+  .ps-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .ps-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+  }
+  .ps-card.solution { border-color: rgba(74, 222, 128, 0.25); }
+  .ps-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .ps-label.problem { color: var(--rose); }
+  .ps-label.solution { color: var(--green); }
+  .ps-card h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+  }
+  .ps-list { list-style: none; }
+  .ps-list li {
+    font-size: 0.83rem;
+    color: var(--text-mid);
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+  .ps-list li:last-child { border-bottom: none; }
+  .ps-list li .icon { flex-shrink: 0; margin-top: 1px; font-size: 0.85rem; }
+
+  /* ── WORKFLOW STEPS ── */
+  .flow-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 1.75rem;
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .flow-step:hover { border-color: var(--border-light); }
+  .flow-step.active {
+    border-color: rgba(108,143,255,0.4);
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(108,143,255,0.05) 100%);
+  }
+  .flow-connector {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    margin: 0 auto;
+    position: relative;
+    left: 2.5rem;
+  }
+  .flow-connector::after {
+    content: '↓';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-faint);
+    font-size: 0.75rem;
+    background: var(--bg);
+    padding: 0 4px;
+  }
+  .step-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-light);
+    color: var(--text-mid);
+  }
+  .flow-step.active .step-num {
+    background: var(--accent-soft);
+    border-color: rgba(108,143,255,0.4);
+    color: var(--accent);
+  }
+  .step-body { flex: 1; }
+  .step-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .step-desc {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+  .step-tag {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border-radius: 100px;
+  }
+  .tag-katherine { background: var(--purple-soft); color: var(--purple); border: 1px solid rgba(192,132,252,0.25); }
+  .tag-claude { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(108,143,255,0.25); }
+  .tag-auto { background: var(--green-soft); color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
+
+  /* ── TIME SAVED ── */
+  .time-card {
+    background: var(--surface);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    border-radius: 12px;
+    padding: 1.75rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .time-icon { font-size: 2rem; flex-shrink: 0; }
+  .time-body h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 0.3rem;
+  }
+  .time-body p { font-size: 0.83rem; color: var(--text-mid); }
+
+  /* ── BRANDS ── */
+  .brands-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .brand-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .brand-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
+  .brand-num {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 1rem;
+  }
+  .brand-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+  .brand-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .brand-card .sub {
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    margin-bottom: 1.25rem;
+  }
+  .brand-features { list-style: none; }
+  .brand-features li {
+    font-size: 0.78rem;
+    color: var(--text-mid);
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  .brand-features li:last-child { border-bottom: none; }
+  .brand-features li::before { content: '→'; color: var(--text-faint); flex-shrink: 0; }
+  .brand-card.b1 h3 { color: var(--accent); }
+  .brand-card.b2 h3 { color: var(--green); }
+  .brand-card.b3 h3 { color: var(--amber); }
+  .brand-card.b1 { border-top: 2px solid rgba(108,143,255,0.4); }
+  .brand-card.b2 { border-top: 2px solid rgba(74,222,128,0.4); }
+  .brand-card.b3 { border-top: 2px solid rgba(251,191,36,0.4); }
+
+  /* ── WHAT SHE GETS ── */
+  .gets-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .gets-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 1.75rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .gets-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+  }
+  .gets-body h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+  .gets-body p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.6; }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 3rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer p { font-size: 0.75rem; color: var(--text-faint); }
+  .footer-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid rgba(108,143,255,0.25);
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--text-faint);
+  }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  @media (max-width: 700px) {
+    body { padding: 1.5rem 1rem 4rem; }
+    .ps-grid, .brands-grid, .gets-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 1.5rem; }
+    .time-card { flex-direction: column; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">AI Copywriting System · Proposal</div>
+    <h1>Three brands.<br><span>One system.</span> Zero friction.</h1>
+    <p>A custom AI setup built for Katherine — tone locked in, format ready, structured to run with minimal effort every session.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-val">~390</span>
+        <span class="stat-label">SKUs / month</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">3</span>
+        <span class="stat-label">Brand projects</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">1×</span>
+        <span class="stat-label">Setup, then fly</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEM / SOLUTION -->
+  <p class="section-title">The problem &amp; the fix</p>
+  <div class="ps-grid">
+    <div class="ps-card">
+      <p class="ps-label problem">Current reality</p>
+      <h3>Manual, repetitive, time-consuming</h3>
+      <ul class="ps-list">
+        <li><span class="icon">⏳</span>~390 SKUs/month written from scratch across three brands</li>
+        <li><span class="icon">🔀</span>Each brand has different tone, format, and style rules</li>
+        <li><span class="icon">📋</span>Raw data spread across multiple Google Sheet columns</li>
+        <li><span class="icon">🖼️</span>Image cross-referencing is a separate, restricted-access step</li>
+        <li><span class="icon">🔁</span>Same structure rewritten manually every time</li>
+      </ul>
+    </div>
+    <div class="ps-card solution">
+      <p class="ps-label solution">What changes</p>
+      <h3>Structured input. Consistent output. Less effort.</h3>
+      <ul class="ps-list">
+        <li><span class="icon">✦</span>Three dedicated AI workspaces, one per brand</li>
+        <li><span class="icon">🔒</span>Brand tone and format rules baked in — nothing to configure</li>
+        <li><span class="icon">⚡</span>Paste raw data in, get ready-to-use copy out</li>
+        <li><span class="icon">📄</span>Output formatted to match the final sheet exactly</li>
+        <li><span class="icon">🖼️</span>Image QA stays with Katherine — quick, clean, in her control</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- WORKFLOW -->
+  <p class="section-title">Katherine's session workflow</p>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#6c8fff"></div>Claude handles it</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c084fc"></div>Katherine's step</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>Automated / instant</div>
+  </div>
+  <div class="flow-wrap">
+
+    <div class="flow-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Open the right Project <span class="step-tag tag-katherine">Katherine</span></div>
+        <div class="step-desc">Foschini, Sportscene, or @home — each lives as its own Claude Project with all brand rules pre-loaded.</div>
+      </div>
+    </div>
+    <div class="flow-connector"></div>
+
+    <div class="flow-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Copy relevant columns from Google Sheets <span class="step-tag tag-katherine">Katherine</span></div>
+        <div class="step-desc">She selects the SKU batch — columns I, K, L, T, U, AE, AF-AI — and pastes into Claude.</div>
+      </div>
+    </div>
+    <div class="flow-connector"></div>
+
+    <div class="flow-step active">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Claude writes the copy <span class="step-tag tag-claude">Claude AI</span></div>
+        <div class="step-desc">Product name and full description generated — correct tone, correct format, styling suggestions and key detail list included. Every time.</div>
+      </div>
+    </div>
+    <div class="flow-connector"></div>
+
+    <div class="flow-step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Image cross-reference QA <span class="step-tag tag-katherine">Katherine</span></div>
+        <div class="step-desc">Katherine checks the output against the brand image gallery (her logins, her access). Confirms descriptions match what's shown.</div>
+      </div>
+    </div>
+    <div class="flow-connector"></div>
+
+    <div class="flow-step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Paste into final brand sheet <span class="step-tag tag-auto">Done</span></div>
+        <div class="step-desc">Formatted output goes directly into the brand-side Google Sheet. No reformatting needed.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BRANDS -->
+  <p class="section-title">Three projects. Three voices.</p>
+  <div class="brands-grid">
+    <div class="brand-card b1">
+      <div class="brand-num">Project 01</div>
+      <div class="brand-icon">👗</div>
+      <h3>Foschini</h3>
+      <p class="sub">Clothing, bags &amp; shoes</p>
+      <ul class="brand-features">
+        <li>Tone matched to Instagram captions</li>
+        <li>Style-forward descriptions</li>
+        <li>Outfit &amp; styling suggestions</li>
+        <li>Key detail bullet list included</li>
+      </ul>
+    </div>
+    <div class="brand-card b2">
+      <div class="brand-num">Project 02</div>
+      <div class="brand-icon">👟</div>
+      <h3>Sportscene</h3>
+      <p class="sub">Clothing &amp; footwear</p>
+      <ul class="brand-features">
+        <li>Sport and streetwear tone</li>
+        <li>Performance + style balance</li>
+        <li>Brand-appropriate language</li>
+        <li>Same structured format</li>
+      </ul>
+    </div>
+    <div class="brand-card b3">
+      <div class="brand-num">Project 03</div>
+      <div class="brand-icon">🛋️</div>
+      <h3>@home</h3>
+      <p class="sub">Homeware — furniture to cutlery</p>
+      <ul class="brand-features">
+        <li>Lifestyle and interior tone</li>
+        <li>Adapted for broad category range</li>
+        <li>Material and function details</li>
+        <li>Format adjusted for homeware</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIME SAVED -->
+  <div class="time-card">
+    <div class="time-icon">⚡</div>
+    <div class="time-body">
+      <h3>Significant time saved every month</h3>
+      <p>~390 descriptions that previously required full manual effort — researched, written, and formatted one by one — now generated in seconds per batch. Katherine's time shifts from writing to reviewing and refining.</p>
+    </div>
+  </div>
+
+  <!-- WHAT SHE GETS -->
+  <p class="section-title">What Katherine gets</p>
+  <div class="gets-grid">
+    <div class="gets-card">
+      <div class="gets-icon">🤖</div>
+      <div class="gets-body">
+        <h4>Claude Pro account</h4>
+        <p>Her own workspace — set up, configured, and ready. She manages her own ~$20/month subscription.</p>
+      </div>
+    </div>
+    <div class="gets-card">
+      <div class="gets-icon">📁</div>
+      <div class="gets-body">
+        <h4>Three configured Projects</h4>
+        <p>Each project has tone, format, and brand rules locked in. Open it and work — nothing to configure.</p>
+      </div>
+    </div>
+    <div class="gets-card">
+      <div class="gets-icon">⚙️</div>
+      <div class="gets-body">
+        <h4>Custom system prompts</h4>
+        <p>Every brand has its own AI instruction set — built, tested, and calibrated before handoff.</p>
+      </div>
+    </div>
+    <div class="gets-card">
+      <div class="gets-icon">📋</div>
+      <div class="gets-body">
+        <h4>Simple prompt guide</h4>
+        <p>A short reference showing exactly what to paste and how to run each session. No guesswork.</p>
+      </div>
+    </div>
+    <div class="gets-card">
+      <div class="gets-icon">🚀</div>
+      <div class="gets-body">
+        <h4>Live onboarding session</h4>
+        <p>Walk-through of the full workflow together — until Katherine is confident flying solo.</p>
+      </div>
+    </div>
+    <div class="gets-card">
+      <div class="gets-icon">📈</div>
+      <div class="gets-body">
+        <h4>A system that scales</h4>
+        <p>New SKU batches, new categories — same workflow. No rebuilding, no retraining required.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>One-time setup &nbsp;·&nbsp; Katherine manages her own Claude Pro subscription (~$20/month) &nbsp;·&nbsp; No ongoing monitoring required</p>
+    <div class="footer-badge">Built by Jesse Woudstra</div>
+  </div>
+
+</body>
+</html>
